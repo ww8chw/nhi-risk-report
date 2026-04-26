@@ -1,0 +1,15 @@
+{
+  "build": {
+    "command": "pnpm install && pnpm run build"
+  },
+  "start": {
+    "command": "pnpm run start"
+  },
+  "ports": [
+    {
+      "id": "web",
+      "port": 8080,
+      "type": "HTTP"
+    }
+  ]
+}
