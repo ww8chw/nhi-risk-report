@@ -1,49 +1,64 @@
 @echo off
-REM 安安診所 · 健檢風險評估報告 — Windows 啟動腳本
-REM 雙擊即執行：啟動本地代理 → 自動開瀏覽器
-
-cd /d "%~dp0"
 chcp 65001 >nul
+cd /d "%~dp0"
+title NHI Risk Report - 安安診所健檢報告
 
-where bun >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
+set "BUN=%USERPROFILE%\.bun\bin\bun.exe"
+
+REM ============================================================
+REM 第一次使用：自動安裝 Bun
+REM ============================================================
+if not exist "%BUN%" (
   echo ===============================================
-  echo   首次使用 — 正在安裝 Bun
+  echo   First-time setup: Installing Bun (10MB^)
   echo ===============================================
   echo.
-  powershell -c "irm bun.sh/install.ps1 | iex"
-  setx PATH "%USERPROFILE%\.bun\bin;%PATH%" >nul
-  set "PATH=%USERPROFILE%\.bun\bin;%PATH%"
-  where bun >nul 2>&1
-  if %ERRORLEVEL% NEQ 0 (
+  powershell -ExecutionPolicy Bypass -NoProfile -Command "irm bun.sh/install.ps1 | iex"
+  if not exist "%BUN%" (
     echo.
-    echo X Bun 安裝失敗。請手動執行 PowerShell：
-    echo     irm bun.sh/install.ps1 ^| iex
-    echo   完成後再雙擊本檔。
+    echo [X] Bun install failed.
+    echo     Please open PowerShell and run manually:
+    echo         irm bun.sh/install.ps1 ^| iex
+    echo     Then double-click this file again.
+    echo.
     pause
     exit /b 1
   )
   echo.
-  echo OK Bun 安裝完成
+  echo [OK] Bun installed
   echo.
 )
 
+REM ============================================================
+REM 開啟瀏覽器（延遲 2 秒讓代理先啟動）
+REM ============================================================
+set "CHROME1=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
+set "CHROME2=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe"
+set "CHROME3=%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe"
+
+if exist "%CHROME1%" (
+  start "" cmd /c "timeout /t 2 /nobreak >nul & start """" ""%CHROME1%"" http://localhost:7777"
+) else if exist "%CHROME2%" (
+  start "" cmd /c "timeout /t 2 /nobreak >nul & start """" ""%CHROME2%"" http://localhost:7777"
+) else if exist "%CHROME3%" (
+  start "" cmd /c "timeout /t 2 /nobreak >nul & start """" ""%CHROME3%"" http://localhost:7777"
+) else (
+  start "" cmd /c "timeout /t 2 /nobreak >nul & start """" http://localhost:7777"
+)
+
+REM ============================================================
+REM 前景跑 Bun proxy（關視窗即停止）
+REM ============================================================
 echo ===============================================
-echo   安安診所 · 健檢風險評估報告
+echo   安安診所 健檢風險評估報告
+echo   Proxy: http://localhost:7777
+echo   關閉本視窗即停止 / Close this window to stop
 echo ===============================================
 echo.
-echo 正在啟動本地代理...
 
-start /b cmd /c "bun proxy.ts"
-timeout /t 2 /nobreak >nul
+"%BUN%" proxy.ts
 
-echo OK 代理運作中 (port 7777)
+REM 若 bun 意外退出，留視窗讓使用者看訊息
 echo.
-echo 正在開啟瀏覽器...
-REM 優先用 Chrome 開
-start "" "chrome.exe" "http://localhost:7777" 2>nul || start "" "http://localhost:7777"
-
-echo.
-echo 使用完畢後，關閉這個視窗即可停止伺服器。
-echo.
+echo Server stopped.
 pause
