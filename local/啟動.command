@@ -64,7 +64,12 @@ fi
 echo "✓ 代理運作中 (PID $SERVER_PID, port 7777)"
 echo ""
 echo "正在開啟瀏覽器..."
-open "report.html"
+# 用 Chrome 開（診所主要瀏覽器）；Chrome 沒裝就 fallback 到預設瀏覽器
+if [ -d "/Applications/Google Chrome.app" ]; then
+  open -a "Google Chrome" "http://localhost:7777"
+else
+  open "http://localhost:7777"
+fi
 
 echo ""
 echo "👉 使用完畢後，關閉這個視窗即可停止伺服器。"

@@ -61,12 +61,20 @@ async function callDisease(d: Disease, body: RiskRequest): Promise<Outcome> {
   }
 }
 
+const HTML_PATH = `${import.meta.dir}/report.html`;
+
 const server = Bun.serve({
   port: PORT,
   async fetch(req) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders() });
+    }
+    // 同時 serve 前端 HTML — Clinic Hub 卡片可直接連 http://localhost:7777
+    if (url.pathname === "/" || url.pathname === "/report.html") {
+      return new Response(Bun.file(HTML_PATH), {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
     }
     if (url.pathname === "/api/healthz") {
       return Response.json({ status: "ok" }, { headers: corsHeaders() });
@@ -101,4 +109,5 @@ const server = Bun.serve({
 });
 
 console.log(`✓ 本地代理已啟動：http://localhost:${server.port}`);
-console.log(`  打開 report.html 即可開始使用。關閉這個視窗會停止伺服器。`);
+console.log(`  瀏覽器打開上面網址即可使用，或從 Clinic Hub 點「健檢報告產生器（本機）」`);
+console.log(`  關閉這個視窗會停止伺服器。`);

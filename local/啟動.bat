@@ -40,7 +40,8 @@ timeout /t 2 /nobreak >nul
 echo OK 代理運作中 (port 7777)
 echo.
 echo 正在開啟瀏覽器...
-start "" "report.html"
+REM 優先用 Chrome 開
+start "" "chrome.exe" "http://localhost:7777" 2>nul || start "" "http://localhost:7777"
 
 echo.
 echo 使用完畢後，關閉這個視窗即可停止伺服器。
