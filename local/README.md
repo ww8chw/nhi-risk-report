@@ -5,7 +5,7 @@
 ## 安裝（一次）
 
 1. 把整個 `local/` 資料夾複製到診所電腦（建議放桌面）
-2. 雙擊 `啟動.bat`
+2. 雙擊 `start.bat`
 3. 第一次會跳「Windows 已保護您的電腦」→ 點「其他資訊」→「仍要執行」
 4. PowerShell 自動裝 Bun（約 30 秒，僅這一次）→ 啟動代理 → Chrome 自動開報告頁
 
@@ -13,13 +13,13 @@
 
 ### 方式 A：從 Clinic Hub 點
 
-1. 雙擊 `啟動.bat` 啟動代理（cmd 視窗會留著，**別關**）
+1. 雙擊 `start.bat` 啟動代理（cmd 視窗會留著，**別關**）
 2. 在 Clinic Hub 點「健檢報告產生器（本機）」卡片 → Chrome 新分頁開到 `http://localhost:7777`
 3. 填表 → 「產生報告」→ 「列印 / 存 PDF」
 
 ### 方式 B：直接雙擊 .bat
 
-1. 雙擊 `啟動.bat` → 自動開 Chrome 到 `http://localhost:7777`
+1. 雙擊 `start.bat` → 自動開 Chrome 到 `http://localhost:7777`
 2. 同樣填表 → 產生報告 → 列印
 
 ### 結束
@@ -41,7 +41,7 @@ Chrome 列印對話框會自動帶入（@page CSS），但人員務必再次確�
 
 ```
 local/
-├── 啟動.bat        # Windows 雙擊啟動腳本
+├── start.bat        # Windows 雙擊啟動腳本
 ├── proxy.ts        # Bun 寫的本地代理（port 7777）
 │                   # 同時 serve report.html 與 /api/risk-assessment
 ├── report.html     # 單檔 SPA — 全部 UI
@@ -50,19 +50,19 @@ local/
 
 ## 疑難排解
 
-**雙擊 `啟動.bat` 沒反應 / SmartScreen 擋**
+**雙擊 `start.bat` 沒反應 / SmartScreen 擋**
 - 點「其他資訊」→「仍要執行」
 
 **Bun 安裝失敗（PowerShell ExecutionPolicy）**
 - 手動開 PowerShell 跑：`irm bun.sh/install.ps1 | iex`
-- 完成後再雙擊 `啟動.bat`
+- 完成後再雙擊 `start.bat`
 
 **Port 7777 已被佔用**
 - 上一次的 cmd 視窗沒關。打開「工作管理員」結束所有 `bun.exe`，或重啟電腦。
 
 **Clinic Hub 點「健檢報告產生器（本機）」連不上 / 顯示 `localhost 拒絕連線`**
 - 確認 cmd 視窗還開著、有顯示「Proxy: http://localhost:7777」
-- 沒有就再雙擊 `啟動.bat`
+- 沒有就再雙擊 `start.bat`
 
 **產生報告時所有疾病都「請求逾時」**
 - 確認電腦能上網
