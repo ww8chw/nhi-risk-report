@@ -419,7 +419,8 @@ label.field .lbl {
     <div style="display:flex;gap:8px;align-items:center;">
       <span id="status-pill" class="pill warn">代理檢查中…</span>
       <button id="btn-back" class="btn" style="display:none;">← 回編輯</button>
-      <button id="btn-print" class="btn primary" style="display:none;">列印 / 存 PDF</button>
+      <span id="print-hint" style="display:none;font-size:11px;color:var(--ink-faint);letter-spacing:0.05em;font-family:'PingFang TC',sans-serif;">紙張請選 A5 · 橫向</span>
+      <button id="btn-print" class="btn primary" style="display:none;" title="Chrome 列印對話框中：紙張大小選 A5，版面配置選橫向">列印 / 存 PDF</button>
     </div>
   </div>
 </header>
@@ -614,6 +615,7 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
     document.getElementById('view-report').style.display = 'block';
     document.getElementById('btn-back').style.display = 'inline-flex';
     document.getElementById('btn-print').style.display = 'inline-flex';
+    document.getElementById('print-hint').style.display = 'inline';
     window.scrollTo(0, 0);
   } catch (e) {
     errBox.textContent = '無法連到本地代理或國健署。請確認「啟動.command」已雙擊執行。錯誤：' + (e.message || e);
@@ -632,6 +634,7 @@ document.getElementById('btn-back').addEventListener('click', () => {
   document.getElementById('view-edit').style.display = 'block';
   document.getElementById('btn-back').style.display = 'none';
   document.getElementById('btn-print').style.display = 'none';
+  document.getElementById('print-hint').style.display = 'none';
 });
 document.getElementById('btn-print').addEventListener('click', () => window.print());
 
