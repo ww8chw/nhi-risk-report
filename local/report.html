@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>安安診所 · 健檢風險評估報告</title>
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #cbd5e1;
+  --border-soft: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-faint: #94a3b8;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --green-bg: #d1fae5;
+  --green-text: #047857;
+  --green-border: #a7f3d0;
+  --yellow-bg: #fef3c7;
+  --yellow-text: #b45309;
+  --yellow-border: #fde68a;
+  --red-bg: #ffe4e6;
+  --red-text: #be123c;
+  --red-border: #fecdd3;
+  --slate-bg: #f1f5f9;
+  --slate-border: #e2e8f0;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: "Inter", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.app { max-width: 960px; margin: 0 auto; padding: 0 16px 40px; }
+
+/* Header */
+header.top {
+  background: var(--card);
+  border-bottom: 1px solid var(--border-soft);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+header.top .inner {
+  max-width: 960px; margin: 0 auto;
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+}
+.brand .logo {
+  width: 32px; height: 32px;
+  background: var(--accent); color: white;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+.brand .name { font-weight: 600; line-height: 1.2; }
+.brand .sub { font-size: 11px; color: var(--text-faint); line-height: 1.2; }
+
+/* Status pill */
+.pill {
+  font-size: 11px; padding: 3px 8px;
+  border-radius: 999px; font-weight: 500;
+  border: 1px solid;
+}
+.pill.ok { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+.pill.warn { background: var(--yellow-bg); color: var(--yellow-text); border-color: var(--yellow-border); }
+.pill.err { background: var(--red-bg); color: var(--red-text); border-color: var(--red-border); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+}
+.btn:hover { background: var(--slate-bg); }
+.btn.primary {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+h1 { font-size: 24px; margin: 24px 0 4px; }
+.lead { color: var(--text-muted); margin-bottom: 24px; }
+
+/* Form section */
+.section {
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.section h2 {
+  font-size: 15px; margin: 0 0 16px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border-soft);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+label.field { display: block; }
+label.field .lbl {
+  display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;
+}
+.input {
+  width: 100%; padding: 6px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  font-size: 14px; background: white;
+  font-family: inherit;
+}
+.input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+select.input { background-image: linear-gradient(white, white); }
+
+/* Yes/No */
+.yesno { display: flex; gap: 4px; }
+.yesno button {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+.yesno button.active {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+
+/* Submit row */
+.actions {
+  display: flex; gap: 8px; justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* Error */
+.error {
+  padding: 12px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: 6px;
+  color: var(--red-text);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* Spinner */
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Report view */
+.report {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 16px;
+}
+.report > section { margin-bottom: 20px; }
+.report h2 { font-size: 15px; margin: 0 0 8px; }
+.report header.rh {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  border-bottom: 1px solid var(--border-soft); padding-bottom: 16px;
+}
+.report header.rh h1 { font-size: 22px; margin: 0; }
+.report header.rh .meta { text-align: right; font-size: 12px; color: var(--text-faint); }
+
+.info-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.info-row > div .lbl { font-size: 11px; color: var(--text-muted); }
+.info-row > div .val { font-weight: 500; }
+
+.lab-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+}
+.lab-cell {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 8px 12px;
+  border: 1px solid;
+  border-radius: 6px;
+  background: var(--slate-bg);
+  border-color: var(--slate-border);
+  font-size: 13px;
+}
+.lab-cell .lbl { color: var(--text-muted); }
+.lab-cell .val { font-weight: 500; }
+.lab-cell .unit { font-size: 11px; color: var(--text-faint); margin-left: 2px; }
+.lab-cell.high { background: var(--red-bg); border-color: var(--red-border); }
+.lab-cell.low { background: var(--yellow-bg); border-color: var(--yellow-border); }
+
+.risk-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.risk-card {
+  padding: 12px;
+  border: 1px solid;
+  border-radius: 8px;
+  break-inside: avoid;
+}
+.risk-card.green { background: var(--green-bg); border-color: var(--green-border); }
+.risk-card.yellow { background: var(--yellow-bg); border-color: var(--yellow-border); }
+.risk-card.red { background: var(--red-bg); border-color: var(--red-border); }
+.risk-card.unknown { background: var(--slate-bg); border-color: var(--slate-border); }
+.risk-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.risk-card .name { font-weight: 500; font-size: 14px; }
+.risk-card .level { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; }
+.risk-card .level .dot { width: 8px; height: 8px; border-radius: 50%; }
+.risk-card.green .level { color: var(--green-text); } .risk-card.green .dot { background: #10b981; }
+.risk-card.yellow .level { color: var(--yellow-text); } .risk-card.yellow .dot { background: #f59e0b; }
+.risk-card.red .level { color: var(--red-text); } .risk-card.red .dot { background: #ef4444; }
+.risk-card .desc { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+.risk-card .stats { display: flex; gap: 16px; align-items: baseline; }
+.risk-card .stats > div .l { font-size: 11px; color: var(--text-muted); }
+.risk-card .big { font-size: 26px; font-weight: 700; }
+.risk-card.green .big { color: var(--green-text); }
+.risk-card.yellow .big { color: var(--yellow-text); }
+.risk-card.red .big { color: var(--red-text); }
+.risk-card .pct { font-size: 13px; }
+.risk-card .stats .v { font-weight: 500; font-size: 15px; }
+.risk-card.unknown .err-text { font-size: 12px; color: var(--text-muted); }
+
+ul.recs {
+  margin: 0; padding-left: 20px;
+  font-size: 13px;
+}
+ul.recs li { margin-bottom: 6px; }
+
+.signs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  padding-top: 24px;
+  font-size: 13px;
+}
+.signs > div .lbl { font-size: 11px; color: var(--text-muted); margin-bottom: 32px; }
+.signs > div .line { border-bottom: 1px solid var(--text); }
+
+footer.disclaimer {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+footer.disclaimer p { margin: 0 0 4px; }
+
+/* Print */
+@media print {
+  body { background: white !important; }
+  .no-print { display: none !important; }
+  .app { max-width: none; padding: 0; }
+  .report { border: none; padding: 0; margin: 0; }
+  @page { size: A4; margin: 12mm; }
+}
+</style>
+</head>
+<body>
+
+<header class="top no-print">
+  <div class="inner">
+    <div class="brand">
+      <div class="logo">安</div>
+      <div>
+        <div class="name">安安診所 · 健檢風險評估報告</div>
+        <div class="sub">資料來源：國健署科學算病館</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span id="status-pill" class="pill warn">代理檢查中…</span>
+      <button id="btn-back" class="btn" style="display:none;">← 回編輯</button>
+      <button id="btn-print" class="btn primary" style="display:none;">列印 / 存 PDF</button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+<!-- 編輯模式 -->
+<div id="view-edit">
+  <h1>健檢報告產生器</h1>
+  <p class="lead">輸入病人健檢數值，本機代理自動透過國健署「科學算病館」計算 5 種慢性病 10 年風險。</p>
+
+  <div class="section">
+    <h2>病人資料</h2>
+    <div class="grid">
+      <label class="field"><span class="lbl">姓名</span><input id="f-name" class="input" /></label>
+      <label class="field"><span class="lbl">病歷號</span><input id="f-chartNo" class="input" /></label>
+      <label class="field"><span class="lbl">性別 *</span>
+        <select id="f-gender" class="input">
+          <option value="">— 選擇 —</option>
+          <option value="1">男</option>
+          <option value="0">女</option>
+        </select>
+      </label>
+      <label class="field"><span class="lbl">年齡 *</span><input id="f-age" type="number" min="20" max="100" class="input" /></label>
+      <label class="field"><span class="lbl">報告日期</span><input id="f-reportDate" type="date" class="input" /></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>體檢數值</h2>
+    <div class="grid">
+      <label class="field"><span class="lbl">收縮壓 SBP (mmHg)</span><input id="f-sbp" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">舒張壓 DBP (mmHg)</span><input id="f-dbp" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">總膽固醇 (mg/dL)</span><input id="f-chol" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">LDL (mg/dL)</span><input id="f-ldlc" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">HDL (mg/dL)</span><input id="f-hdlc" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">三酸甘油酯 TG (mg/dL)</span><input id="f-tg" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">空腹血糖 (mg/dL)</span><input id="f-glu" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">HbA1c (%)</span><input id="f-hba1c" type="number" step="0.1" class="input" /></label>
+      <label class="field"><span class="lbl">身高 (cm)</span><input id="f-height" type="number" class="input" /></label>
+      <label class="field"><span class="lbl">體重 (kg)</span><input id="f-weight" type="number" step="0.1" class="input" /></label>
+      <label class="field"><span class="lbl">腰圍 (cm)</span><input id="f-waist" type="number" class="input" /></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>病史 (是 / 否)</h2>
+    <div class="grid">
+      <div><span class="lbl" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">高血壓</span>
+        <div class="yesno" data-key="hbp">
+          <button data-v="1">是</button><button data-v="0">否</button><button data-v="" class="active">未知</button>
+        </div>
+      </div>
+      <div><span class="lbl" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">糖尿病</span>
+        <div class="yesno" data-key="diabetes">
+          <button data-v="1">是</button><button data-v="0">否</button><button data-v="" class="active">未知</button>
+        </div>
+      </div>
+      <div><span class="lbl" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;">抽菸</span>
+        <div class="yesno" data-key="smoke">
+          <button data-v="1">是</button><button data-v="0">否</button><button data-v="" class="active">未知</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="error-box" class="error" style="display:none;"></div>
+
+  <div class="actions">
+    <button id="btn-clear" class="btn">清除</button>
+    <button id="btn-submit" class="btn primary">產生報告</button>
+  </div>
+</div>
+
+<!-- 報告模式 -->
+<div id="view-report" style="display:none;">
+  <article class="report" id="report-content"></article>
+</div>
+
+</div>
+
+<script>
+const PROXY = 'http://localhost:7777';
+
+const state = {
+  form: {
+    name: '', chartNo: '', gender: '', age: '', reportDate: new Date().toISOString().slice(0, 10),
+    sbp: '', dbp: '', hdlc: '', ldlc: '', chol: '', tg: '', glu: '', hba1c: '',
+    height: '', weight: '', waist: '',
+    hbp: '', diabetes: '', smoke: '',
+  },
+  results: null,
+};
+
+const DISEASES = ['chd', 'stroke', 'diabetes', 'hypertension', 'mace'];
+const DISEASE_LABEL = {
+  chd: '冠心病', stroke: '腦中風', diabetes: '糖尿病',
+  hypertension: '高血壓', mace: '心血管不良事件 (MACE)',
+};
+const DISEASE_DESC = {
+  chd: '未來 10 年發生冠狀動脈心臟病的機率',
+  stroke: '未來 10 年發生腦中風的機率',
+  diabetes: '未來 10 年罹患第二型糖尿病的機率',
+  hypertension: '未來 10 年罹患高血壓的機率',
+  mace: '未來 10 年發生重大心血管事件的綜合機率',
+};
+
+// ---------- bind form inputs ----------
+Object.keys(state.form).forEach((k) => {
+  const el = document.getElementById('f-' + k);
+  if (!el) return;
+  el.value = state.form[k];
+  el.addEventListener('input', (e) => { state.form[k] = e.target.value; });
+});
+
+// yesno groups
+document.querySelectorAll('.yesno').forEach((grp) => {
+  const key = grp.dataset.key;
+  grp.querySelectorAll('button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      grp.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.form[key] = btn.dataset.v;
+    });
+  });
+});
+
+// ---------- proxy health check ----------
+async function checkProxy() {
+  const pill = document.getElementById('status-pill');
+  try {
+    const r = await fetch(PROXY + '/api/healthz', { signal: AbortSignal.timeout(2000) });
+    if (r.ok) {
+      pill.textContent = '✓ 代理運作中';
+      pill.className = 'pill ok';
+      return true;
+    }
+  } catch (e) { /* fall through */ }
+  pill.textContent = '⚠ 代理未啟動 — 請先雙擊「啟動.command」';
+  pill.className = 'pill err';
+  return false;
+}
+checkProxy();
+setInterval(checkProxy, 8000);
+
+// ---------- submit ----------
+document.getElementById('btn-submit').addEventListener('click', async () => {
+  const errBox = document.getElementById('error-box');
+  errBox.style.display = 'none';
+
+  const f = state.form;
+  if (!f.gender || !f.age || Number(f.age) < 20) {
+    errBox.textContent = '請填入性別和年齡 (20-100)';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  const submitBtn = document.getElementById('btn-submit');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner"></span> 計算中…';
+
+  const num = (s) => (s === '' ? undefined : Number(s));
+  const flag = (s) => (s === '' ? undefined : Number(s));
+  const payload = {
+    gender: Number(f.gender), age: Number(f.age),
+    sbp: num(f.sbp), dbp: num(f.dbp),
+    hdlc: num(f.hdlc), ldlc: num(f.ldlc),
+    chol: num(f.chol), tg: num(f.tg),
+    glu: num(f.glu), hba1c: num(f.hba1c),
+    height: num(f.height), weight: num(f.weight), waist: num(f.waist),
+    hbp: flag(f.hbp), diabetes: flag(f.diabetes), smoke: flag(f.smoke),
+  };
+  const clean = Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined));
+
+  try {
+    const r = await fetch(PROXY + '/api/risk-assessment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(clean),
+    });
+    if (!r.ok) {
+      const t = await r.text();
+      throw new Error('伺服器錯誤 ' + r.status + '：' + t.slice(0, 200));
+    }
+    state.results = await r.json();
+    renderReport();
+    document.getElementById('view-edit').style.display = 'none';
+    document.getElementById('view-report').style.display = 'block';
+    document.getElementById('btn-back').style.display = 'inline-flex';
+    document.getElementById('btn-print').style.display = 'inline-flex';
+    window.scrollTo(0, 0);
+  } catch (e) {
+    errBox.textContent = '無法連到本地代理或國健署。請確認「啟動.command」已雙擊執行。錯誤：' + (e.message || e);
+    errBox.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '產生報告';
+  }
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  if (confirm('確定清除所有欄位？')) location.reload();
+});
+document.getElementById('btn-back').addEventListener('click', () => {
+  document.getElementById('view-report').style.display = 'none';
+  document.getElementById('view-edit').style.display = 'block';
+  document.getElementById('btn-back').style.display = 'none';
+  document.getElementById('btn-print').style.display = 'none';
+});
+document.getElementById('btn-print').addEventListener('click', () => window.print());
+
+// ---------- render report ----------
+function classify(r) {
+  if (r.multipleDiff >= 1.5) return { tone: 'red', label: '高風險' };
+  if (r.multipleDiff >= 1.0) return { tone: 'yellow', label: '中度風險' };
+  return { tone: 'green', label: '風險低於平均' };
+}
+
+function buildLabRows(f) {
+  const rows = [];
+  const num = (s) => (s === '' ? null : Number(s));
+  const push = (label, value, unit, flag) => { if (value) rows.push({ label, value, unit, flag }); };
+
+  const sbp = num(f.sbp), dbp = num(f.dbp);
+  push('收縮壓 (SBP)', f.sbp, 'mmHg', sbp != null && sbp >= 130 ? 'high' : '');
+  push('舒張壓 (DBP)', f.dbp, 'mmHg', dbp != null && dbp >= 80 ? 'high' : '');
+  const tc = num(f.chol);
+  push('總膽固醇', f.chol, 'mg/dL', tc != null && tc >= 200 ? 'high' : '');
+  const ldl = num(f.ldlc);
+  push('LDL (壞膽固醇)', f.ldlc, 'mg/dL', ldl != null && ldl >= 130 ? 'high' : '');
+  const hdl = num(f.hdlc);
+  let hdlFlag = '';
+  if (hdl != null && f.gender === '1' && hdl < 40) hdlFlag = 'low';
+  if (hdl != null && f.gender === '0' && hdl < 50) hdlFlag = 'low';
+  push('HDL (好膽固醇)', f.hdlc, 'mg/dL', hdlFlag);
+  const tg = num(f.tg);
+  push('三酸甘油酯 (TG)', f.tg, 'mg/dL', tg != null && tg >= 150 ? 'high' : '');
+  const glu = num(f.glu);
+  push('空腹血糖', f.glu, 'mg/dL', glu != null && glu >= 100 ? 'high' : '');
+  const a1c = num(f.hba1c);
+  push('HbA1c', f.hba1c, '%', a1c != null && a1c >= 5.7 ? 'high' : '');
+  const ht = num(f.height), wt = num(f.weight);
+  if (ht && wt) {
+    const bmi = wt / Math.pow(ht / 100, 2);
+    push('BMI', bmi.toFixed(1), 'kg/m²', bmi >= 24 ? 'high' : '');
+  }
+  const waist = num(f.waist);
+  let waistFlag = '';
+  if (waist != null && f.gender === '1' && waist >= 90) waistFlag = 'high';
+  if (waist != null && f.gender === '0' && waist >= 80) waistFlag = 'high';
+  push('腰圍', f.waist, 'cm', waistFlag);
+  return rows;
+}
+
+function buildRecs(results, f) {
+  const recs = [];
+  const reds = [];
+  DISEASES.forEach((k) => {
+    const r = results[k];
+    if (r && 'risk' in r && classify(r).tone === 'red') reds.push(DISEASE_LABEL[k]);
+  });
+  if (reds.length === 0) {
+    recs.push('整體慢性病風險屬於可接受範圍，請維持目前的健康生活型態。');
+  } else {
+    recs.push('您在以下項目屬於高風險：' + reds.join('、') + '。建議與醫師討論個人化追蹤與治療計畫。');
+  }
+  const elevated = (k) => {
+    const r = results[k];
+    return r && 'risk' in r && classify(r).tone !== 'green';
+  };
+  if (elevated('hypertension')) {
+    recs.push('血壓控制：每日固定時間量測並紀錄，限鈉攝取每日小於 5 g 食鹽，規律有氧運動每週至少 150 分鐘。');
+  }
+  if (elevated('chd') || elevated('mace')) {
+    recs.push('心血管保護：地中海或得舒(DASH)飲食、減少飽和脂肪與反式脂肪、控制 LDL 膽固醇至建議目標。');
+  }
+  if (elevated('diabetes')) {
+    recs.push('血糖管理：減少精緻糖與含糖飲料、增加全穀與膳食纖維、每年複檢空腹血糖與 HbA1c。');
+  }
+  if (elevated('stroke')) {
+    recs.push('中風預防：戒菸、控制血壓與血脂、若有心房顫動需與醫師討論抗凝血治療。');
+  }
+  if (f.smoke === '1') {
+    recs.push('戒菸：吸菸是所有心血管疾病最強的可改變風險因子，建議尋求戒菸門診協助。');
+  }
+  recs.push('建議追蹤頻率：' + (reds.length >= 2 ? '每 3 個月' : reds.length === 1 ? '每 6 個月' : '每 12 個月') + '回診評估。');
+  return recs;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function renderReport() {
+  const f = state.form;
+  const results = state.results;
+  const labRows = buildLabRows(f);
+  const recs = buildRecs(results, f);
+
+  const labCells = labRows.length === 0
+    ? '<div style="grid-column:1/-1;color:var(--text-faint);font-style:italic;font-size:12px;">未填入體檢數值</div>'
+    : labRows.map((r) => `
+        <div class="lab-cell ${r.flag || ''}">
+          <span class="lbl">${escapeHtml(r.label)}</span>
+          <span class="val">${escapeHtml(r.value)}<span class="unit">${escapeHtml(r.unit)}</span></span>
+        </div>`).join('');
+
+  const riskCards = DISEASES.map((d) => {
+    const r = results[d];
+    if (!r || !('risk' in r)) {
+      return `
+        <div class="risk-card unknown">
+          <div class="top"><div class="name">${DISEASE_LABEL[d]}</div></div>
+          <div class="err-text">無法評估：${escapeHtml((r && r.error) || '無資料')}</div>
+        </div>`;
+    }
+    const lvl = classify(r);
+    return `
+      <div class="risk-card ${lvl.tone}">
+        <div class="top">
+          <div class="name">${DISEASE_LABEL[d]}</div>
+          <div class="level"><span class="dot"></span>${lvl.label}</div>
+        </div>
+        <div class="desc">${DISEASE_DESC[d]}</div>
+        <div class="stats">
+          <div>
+            <div class="l">您的風險</div>
+            <div class="big">${r.risk.toFixed(1)}<span class="pct">%</span></div>
+          </div>
+          <div>
+            <div class="l">同族群平均</div>
+            <div class="v">${r.populationAvg.toFixed(1)}%</div>
+          </div>
+          <div>
+            <div class="l">倍數差</div>
+            <div class="v">${r.multipleDiff.toFixed(2)}×</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const html = `
+    <header class="rh">
+      <div>
+        <h1>安安診所</h1>
+        <p style="color:var(--text-muted);margin:4px 0 0;font-size:13px;">健康檢查 · 慢性病風險評估報告</p>
+      </div>
+      <div class="meta">
+        <div>報告日期：${escapeHtml(f.reportDate)}</div>
+        ${f.chartNo ? `<div>病歷號：${escapeHtml(f.chartNo)}</div>` : ''}
+      </div>
+    </header>
+
+    <section class="info-row">
+      <div><div class="lbl">姓名</div><div class="val">${escapeHtml(f.name || '—')}</div></div>
+      <div><div class="lbl">性別</div><div class="val">${f.gender === '1' ? '男' : f.gender === '0' ? '女' : '—'}</div></div>
+      <div><div class="lbl">年齡</div><div class="val">${f.age ? escapeHtml(f.age) + ' 歲' : '—'}</div></div>
+    </section>
+
+    <section>
+      <h2>本次體檢數值</h2>
+      <div class="lab-grid">${labCells}</div>
+    </section>
+
+    <section>
+      <h2>10 年慢性病風險評估</h2>
+      <div class="risk-grid">${riskCards}</div>
+    </section>
+
+    <section>
+      <h2>個人化健康建議</h2>
+      <ul class="recs">
+        ${recs.map((r) => `<li>${escapeHtml(r)}</li>`).join('')}
+      </ul>
+    </section>
+
+    <section class="signs">
+      <div><div class="lbl">醫師簽名</div><div class="line"></div></div>
+      <div><div class="lbl">病人簽收</div><div class="line"></div></div>
+    </section>
+
+    <footer class="disclaimer">
+      <p>風險分數來源：衛生福利部國民健康署「科學算病館」慢性疾病風險評估平台 v4 (https://cdrc.hpa.gov.tw)。</p>
+      <p>本評估僅供參考，不取代醫師臨床判斷與治療建議。如有疑問請與您的醫師討論。</p>
+      <p>安安診所 · 報告產生時間 ${escapeHtml(f.reportDate)}</p>
+    </footer>
+  `;
+  document.getElementById('report-content').innerHTML = html;
+}
+
+// init reportDate today
+document.getElementById('f-reportDate').value = state.form.reportDate;
+</script>
+</body>
+</html>
