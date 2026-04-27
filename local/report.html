@@ -196,16 +196,16 @@ label.field .lbl {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ============================================================ */
-/* 報告版面 — 套用「健檢單」風格                                  */
+/* 報告版面 — 套用「健檢單」風格 / A5 橫向                        */
 /* ============================================================ */
 .report-shell {
-  /* 螢幕預覽：顯示 A5 紙張感 */
-  max-width: 540px;
+  /* 螢幕預覽：A5 橫向比例 (210:148 ≈ 1.42) */
+  max-width: 760px;
   margin: 24px auto;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 4px;
-  padding: 28px 32px;
+  padding: 22px 28px;
   box-shadow: 0 4px 24px rgba(60,50,30,0.06);
 }
 
@@ -217,40 +217,40 @@ label.field .lbl {
   border-radius: 999px;
   font-size: 11px;
   letter-spacing: 0.3em;
-  margin: 0 auto 10px;
+  margin: 0 auto 8px;
 }
 .rh-title {
   text-align: center;
-  font-size: 26px;
+  font-size: 24px;
   letter-spacing: 0.5em;
   font-weight: 500;
   margin: 0 0 4px;
-  padding-left: 0.5em; /* 補償 letter-spacing 視覺偏移 */
+  padding-left: 0.5em;
   color: var(--ink);
 }
 .rh-sub {
   text-align: center;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--ink-faint);
   letter-spacing: 0.2em;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   font-family: "PingFang TC", sans-serif;
 }
 .rh-divider {
   width: 40px; height: 2px;
   background: var(--gold);
-  margin: 0 auto 20px;
+  margin: 0 auto 14px;
 }
 
 .rh-meta {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background: var(--paper-warm);
   border: 1px solid var(--line-soft);
   border-radius: 4px;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   font-family: "PingFang TC", sans-serif;
 }
 .rh-meta > div { text-align: center; }
@@ -259,55 +259,53 @@ label.field .lbl {
 
 .rh-section-title {
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   color: var(--accent);
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   font-weight: 500;
 }
 
+/* 5 個疾病同大小，橫排 */
 .risk-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
 }
-.risk-grid .full { grid-column: 1 / -1; }
 
 .risk-card {
-  padding: 10px 12px;
+  padding: 10px 10px;
   border: 1px solid;
   border-radius: 4px;
   break-inside: avoid;
   font-family: "PingFang TC", sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 130px;
 }
 .risk-card.green { background: var(--green-bg); border-color: var(--green-line); }
 .risk-card.yellow { background: var(--yellow-bg); border-color: var(--yellow-line); }
 .risk-card.red { background: var(--red-bg); border-color: var(--red-line); }
 .risk-card.unknown { background: var(--slate-bg); border-color: var(--slate-line); }
 
-.risk-card.full {
-  padding: 14px 16px;
-  border-width: 2px;
-}
-
-.rc-head {
-  display: flex; justify-content: space-between; align-items: center;
+.rc-name {
+  font-weight: 500;
+  font-size: 13px;
+  font-family: "Noto Serif TC", "Songti TC", serif;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-align: center;
   margin-bottom: 4px;
 }
-.rc-name {
-  font-weight: 500; font-size: 13px;
-  font-family: "Noto Serif TC", "Songti TC", serif;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-.rc-name.big { font-size: 15px; letter-spacing: 0.15em; }
 .rc-level {
-  display: flex; align-items: center; gap: 5px;
+  display: inline-flex; align-items: center; gap: 4px;
   font-size: 10px;
   letter-spacing: 0.1em;
   font-weight: 500;
+  align-self: center;
+  margin-bottom: 6px;
 }
-.rc-level .dot { width: 7px; height: 7px; border-radius: 50%; }
+.rc-level .dot { width: 6px; height: 6px; border-radius: 50%; }
 .risk-card.green .rc-level { color: var(--green-text); }
 .risk-card.green .dot { background: var(--green-dot); }
 .risk-card.yellow .rc-level { color: var(--yellow-text); }
@@ -315,47 +313,40 @@ label.field .lbl {
 .risk-card.red .rc-level { color: var(--red-text); }
 .risk-card.red .dot { background: var(--red-dot); }
 
-.rc-desc {
-  font-size: 10px;
-  color: var(--ink-soft);
-  line-height: 1.4;
-  margin-bottom: 6px;
-}
-
-.rc-stats {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  align-items: end;
-  gap: 6px;
-}
-.rc-stats .col { }
-.rc-stats .col .l { font-size: 9px; color: var(--ink-soft); letter-spacing: 0.1em; }
-.rc-stats .col .v { font-weight: 500; font-size: 13px; color: var(--ink); }
-.rc-stats .col .big {
+.rc-big {
+  text-align: center;
   font-weight: 600;
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 30px;
+  line-height: 1;
   letter-spacing: -0.02em;
   font-family: "Inter", "PingFang TC", sans-serif;
+  margin-bottom: 6px;
 }
-.risk-card.green .big { color: var(--green-text); }
-.risk-card.yellow .big { color: var(--yellow-text); }
-.risk-card.red .big { color: var(--red-text); }
-.rc-stats .pct { font-size: 12px; }
+.risk-card.green .rc-big { color: var(--green-text); }
+.risk-card.yellow .rc-big { color: var(--yellow-text); }
+.risk-card.red .rc-big { color: var(--red-text); }
+.rc-pct { font-size: 14px; font-weight: 500; }
 
-.risk-card.full .rc-stats .big { font-size: 30px; }
-.risk-card.full .rc-desc { font-size: 11px; }
+.rc-desc {
+  font-size: 9.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  text-align: center;
+  margin-top: auto;
+}
 
 .unknown-text {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--ink-soft);
   font-style: italic;
+  text-align: center;
+  margin: auto 0;
 }
 
 .report-footer {
   border-top: 1px solid var(--line-soft);
-  padding-top: 12px;
-  margin-top: 20px;
+  padding-top: 8px;
+  margin-top: 14px;
   text-align: center;
   font-family: "PingFang TC", sans-serif;
 }
@@ -363,7 +354,7 @@ label.field .lbl {
   font-size: 11px;
   letter-spacing: 0.4em;
   color: var(--accent);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .report-footer .disclaimer {
   font-size: 9px;
@@ -373,8 +364,10 @@ label.field .lbl {
 }
 
 /* ============================================================ */
-/* 列印 — A5 直印                                                */
+/* 列印 — A5 橫印 (210mm × 148mm)                                */
 /* ============================================================ */
+@page { size: A5 landscape; margin: 8mm; }
+
 @media print {
   body { background: white !important; }
   .no-print { display: none !important; }
@@ -387,21 +380,28 @@ label.field .lbl {
     padding: 0;
     border-radius: 0;
   }
-  @page { size: A5 portrait; margin: 10mm; }
+  @page { size: A5 landscape; margin: 8mm; }
 
-  /* A5 內收緊 */
-  .rh-title { font-size: 22px; margin-bottom: 2px; }
-  .rh-divider { margin-bottom: 14px; }
-  .rh-meta { padding: 8px 12px; margin-bottom: 16px; }
-  .rh-section-title { margin-bottom: 10px; }
-  .risk-card { padding: 8px 10px; }
-  .risk-card.full { padding: 10px 12px; }
-  .rc-name { font-size: 12px; }
-  .rc-name.big { font-size: 14px; }
-  .rc-stats .col .big { font-size: 18px; }
-  .risk-card.full .rc-stats .big { font-size: 24px; }
-  .rc-desc { font-size: 9px; margin-bottom: 4px; }
-  .report-footer { margin-top: 14px; padding-top: 10px; }
+  /* A5 橫向收緊：總高約 132mm 可用 */
+  .rh-pill { font-size: 9px; padding: 3px 12px; margin-bottom: 4px; }
+  .rh-title { font-size: 18px; margin-bottom: 2px; }
+  .rh-sub { font-size: 9px; margin-bottom: 6px; }
+  .rh-divider { margin-bottom: 8px; height: 1.5px; }
+  .rh-meta { padding: 6px 12px; margin-bottom: 8px; }
+  .rh-meta .l { font-size: 8px; }
+  .rh-meta .v { font-size: 11px; }
+  .rh-section-title { font-size: 10px; margin-bottom: 6px; }
+
+  .risk-card { padding: 7px 6px; min-height: 0; }
+  .rc-name { font-size: 11px; margin-bottom: 3px; }
+  .rc-level { font-size: 8px; margin-bottom: 4px; }
+  .rc-big { font-size: 22px; margin-bottom: 4px; }
+  .rc-pct { font-size: 11px; }
+  .rc-desc { font-size: 8px; line-height: 1.3; }
+
+  .report-footer { margin-top: 8px; padding-top: 6px; }
+  .report-footer .clinic { font-size: 10px; margin-bottom: 2px; }
+  .report-footer .disclaimer { font-size: 7.5px; }
 }
 </style>
 </head>
@@ -646,54 +646,40 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// ---------- render report (簡化：只剩風險評估) ----------
+// ---------- render report (5 個同大小 / 按風險降序 / 只留 risk%) ----------
 function renderReport() {
   const f = state.form;
   const results = state.results;
 
-  // 4 個個別 + MACE 獨立大卡
-  const individuals = ['chd', 'stroke', 'diabetes', 'hypertension'];
+  // 按風險高低降序排，無資料的擺最後
+  const sorted = DISEASES.slice().sort((a, b) => {
+    const ra = results[a], rb = results[b];
+    const va = ra && 'risk' in ra ? ra.risk : -Infinity;
+    const vb = rb && 'risk' in rb ? rb.risk : -Infinity;
+    return vb - va;
+  });
 
-  function cardHtml(d, opts) {
+  function cardHtml(d) {
     const r = results[d];
-    const isFull = !!opts && opts.full;
-    const fullClass = isFull ? ' full' : '';
-    const nameClass = isFull ? 'rc-name big' : 'rc-name';
     if (!r || !('risk' in r)) {
       return `
-        <div class="risk-card unknown${fullClass}">
-          <div class="rc-head"><div class="${nameClass}">${DISEASE_LABEL[d]}</div></div>
+        <div class="risk-card unknown">
+          <div class="rc-name">${DISEASE_LABEL[d]}</div>
+          <div class="unknown-text">無法評估</div>
           <div class="rc-desc">${DISEASE_DESC[d]}</div>
-          <div class="unknown-text">無法評估：${escapeHtml((r && r.error) || '無資料')}</div>
         </div>`;
     }
     const lvl = classify(r);
     return `
-      <div class="risk-card ${lvl.tone}${fullClass}">
-        <div class="rc-head">
-          <div class="${nameClass}">${DISEASE_LABEL[d]}</div>
-          <div class="rc-level"><span class="dot"></span>${lvl.label}</div>
-        </div>
+      <div class="risk-card ${lvl.tone}">
+        <div class="rc-name">${DISEASE_LABEL[d]}</div>
+        <div class="rc-level"><span class="dot"></span>${lvl.label}</div>
+        <div class="rc-big">${r.risk.toFixed(1)}<span class="rc-pct">%</span></div>
         <div class="rc-desc">${DISEASE_DESC[d]}</div>
-        <div class="rc-stats">
-          <div class="col">
-            <div class="l">您的風險</div>
-            <div class="big">${r.risk.toFixed(1)}<span class="pct">%</span></div>
-          </div>
-          <div class="col">
-            <div class="l">同族群平均</div>
-            <div class="v">${r.populationAvg.toFixed(1)}%</div>
-          </div>
-          <div class="col">
-            <div class="l">倍數差</div>
-            <div class="v">${r.multipleDiff.toFixed(2)}×</div>
-          </div>
-        </div>
       </div>`;
   }
 
-  const individualCards = individuals.map((d) => cardHtml(d, { full: false })).join('');
-  const maceCard = cardHtml('mace', { full: true });
+  const cards = sorted.map(cardHtml).join('');
 
   const html = `
     <div style="text-align:center;">
@@ -720,8 +706,7 @@ function renderReport() {
 
     <div class="rh-section-title">10 年 慢 性 病 風 險 評 估</div>
     <div class="risk-grid">
-      ${individualCards}
-      ${maceCard}
+      ${cards}
     </div>
 
     <div class="report-footer">
